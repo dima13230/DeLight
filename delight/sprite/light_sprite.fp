@@ -165,6 +165,6 @@ void main() {
 	// Combine diffuse and texture color
 	lowp vec4 diffuseColor = texColor * vec4(finalColor + ambient_color);
 
-	//gl_FragColor = diffuseColor;
-	gl_FragColor = vec4(normal * 0.5 + 0.5, 1.0);
+	gl_FragColor = diffuseColor;
+	//gl_FragColor = vec4(normal * 0.5 + 0.5, 1.0);
 }
