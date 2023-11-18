@@ -74,17 +74,28 @@ sampler2D select_shadowmap(int index) {
 	}
 }
 
+// Function to convert diffuse texture to height map
+float diffuseToHeight(sampler2D diffuseTexture, vec2 uv) {
+	// Sample the grayscale value from the diffuse texture
+	float grayscale = texture2D(diffuseTexture, uv).r;
+
+	// You may need to adjust the scale factor based on your specific requirements
+	float height = grayscale * 0.1; // Adjust the scale factor as needed
+
+	return height;
+}
+
 // Sobel operator function to calculate gradients
 vec2 sobelOperator(vec2 uv, vec2 texelSize) {
-	float h1 = texture2D(texture_sampler, uv + texelSize * vec2(-1, -1)).r;
-	float h2 = texture2D(texture_sampler, uv + texelSize * vec2(0, -1)).r;
-	float h3 = texture2D(texture_sampler, uv + texelSize * vec2(1, -1)).r;
-	float h4 = texture2D(texture_sampler, uv + texelSize * vec2(-1, 0)).r;
-	float h5 = texture2D(texture_sampler, uv + texelSize * vec2(0, 0)).r;
-	float h6 = texture2D(texture_sampler, uv + texelSize * vec2(1, 0)).r;
-	float h7 = texture2D(texture_sampler, uv + texelSize * vec2(-1, 1)).r;
-	float h8 = texture2D(texture_sampler, uv + texelSize * vec2(0, 1)).r;
-	float h9 = texture2D(texture_sampler, uv + texelSize * vec2(1, 1)).r;
+	float h1 = diffuseToHeight(texture_sampler, uv + texelSize * vec2(-1, -1));
+	float h2 = diffuseToHeight(texture_sampler, uv + texelSize * vec2(0, -1));
+	float h3 = diffuseToHeight(texture_sampler, uv + texelSize * vec2(1, -1));
+	float h4 = diffuseToHeight(texture_sampler, uv + texelSize * vec2(-1, 0));
+	float h5 = diffuseToHeight(texture_sampler, uv + texelSize * vec2(0, 0));
+	float h6 = diffuseToHeight(texture_sampler, uv + texelSize * vec2(1, 0));
+	float h7 = diffuseToHeight(texture_sampler, uv + texelSize * vec2(-1, 1));
+	float h8 = diffuseToHeight(texture_sampler, uv + texelSize * vec2(0, 1));
+	float h9 = diffuseToHeight(texture_sampler, uv + texelSize * vec2(1, 1));
 
 	float sobelX = h3 + 2.0 * h6 + h9 - (h1 + 2.0 * h4 + h7);
 	float sobelY = h1 + 2.0 * h2 + h3 - (h7 + 2.0 * h8 + h9);
