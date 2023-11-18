@@ -125,7 +125,7 @@ void main() {
 			lowp float specular = pow(max(dot(viewDir, reflectDir), 0.0), shininess.x);
 
 			// Apply the diffuse and specular lighting to the light color
-			color *= vec4(diffuse + specular);
+			color *= vec4(diffuse + 0.5 * specular);
 		}
 
 		// Sample the shadow map
