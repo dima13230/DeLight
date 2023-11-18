@@ -1,7 +1,7 @@
 name: "sprite"
 tags: "light_tile"
-vertex_program: "/render/lights/sprite/light_sprite.vp"
-fragment_program: "/render/lights/sprite/light_sprite.fp"
+vertex_program: "/delight/sprite/light_sprite.vp"
+fragment_program: "/delight/sprite/light_sprite.fp"
 vertex_space: VERTEX_SPACE_WORLD
 vertex_constants {
   name: "view_proj"
