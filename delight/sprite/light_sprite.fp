@@ -74,17 +74,18 @@ sampler2D select_shadowmap(int index) {
 	}
 }
 
-// Function to calculate the normal map from a diffuse texture
 vec3 calculateNormalMap(vec2 texcoord, sampler2D diffuseTexture)
 {
-	// Sample the diffuse texture
+	// Sample the diffuse texture at four neighboring texcoords
 	vec3 center = texture2D(diffuseTexture, texcoord).rgb;
-	vec3 right = texture2D(diffuseTexture, texcoord + vec2(1.0, 0.0) / textureSize(diffuseTexture, 0)).rgb;
 	vec3 up = texture2D(diffuseTexture, texcoord + vec2(0.0, 1.0) / textureSize(diffuseTexture, 0)).rgb;
+	vec3 down = texture2D(diffuseTexture, texcoord - vec2(0.0, 1.0) / textureSize(diffuseTexture, 0)).rgb;
+	vec3 left = texture2D(diffuseTexture, texcoord + vec2(1.0, 0.0) / textureSize(diffuseTexture, 0)).rgb;
+	vec3 right = texture2D(diffuseTexture, texcoord - vec2(1.0, 0.0) / textureSize(diffuseTexture, 0)).rgb;
 
-	// Calculate the normal in tangent space
-	vec3 dx = normalize(right - center);
-	vec3 dy = normalize(up - center);
+	// Calculate the normal using the bilinear interpolation method
+	vec3 dx = normalize(right - left);
+	vec3 dy = normalize(up - down);
 	vec3 normal = cross(dx, dy);
 
 	// Convert the normal to world space
@@ -164,6 +165,6 @@ void main() {
 	// Combine diffuse and texture color
 	lowp vec4 diffuseColor = texColor * vec4(finalColor + ambient_color);
 
-	gl_FragColor = diffuseColor;
-	//gl_FragColor = vec4(normal * 0.5 + 0.5, 1.0);
+	//gl_FragColor = diffuseColor;
+	gl_FragColor = vec4(normal * 0.5 + 0.5, 1.0);
 }
