@@ -2,7 +2,7 @@ go.property("normal_map", resource.atlas())
 go.property("normal_height", 1.0)
 go.property("shininess", 32.0)
 
-local lights = require "render.lights.lights"
+local lights = require "delight.lights"
 
 function init(self)
 	self.position = go.get_position()

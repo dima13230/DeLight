@@ -1,7 +1,7 @@
 name: "light_map"
 tags: "light_quad"
-vertex_program: "/render/lights/render/light_quad.vp"
-fragment_program: "/render/lights/render/light_quad.fp"
+vertex_program: "/delight/render/light_quad.vp"
+fragment_program: "/delight/render/light_quad.fp"
 vertex_space: VERTEX_SPACE_WORLD
 vertex_constants {
   name: "view_proj"

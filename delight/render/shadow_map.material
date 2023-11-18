@@ -1,7 +1,7 @@
 name: "shadow_map"
 tags: "shadow_map"
-vertex_program: "/render/lights/render/shadow_map.vp"
-fragment_program: "/render/lights/render/shadow_map.fp"
+vertex_program: "/delight/render/shadow_map.vp"
+fragment_program: "/delight/render/shadow_map.fp"
 vertex_space: VERTEX_SPACE_WORLD
 vertex_constants {
   name: "view_proj"

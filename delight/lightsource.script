@@ -16,8 +16,8 @@ go.property("flicker_off_delay", 2)
 go.property("flicker_on_delay", 0.5)
 
 
-local lights = require "render.lights.lights"
-local math_ex = require "scripts.utils.math_extended"
+local lights = require "delight.lights"
+local math_ex = require "delight.utils.math_extended"
 
 --[[
 x and y = upper semi-cirlce

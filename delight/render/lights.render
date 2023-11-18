@@ -1,7 +1,7 @@
-script: "/render/lights/render/lights.render_script"
+script: "/delight/render/lights.render_script"
 materials {
   name: "shadow_map"
-  material: "/lights/render/shadow_map.material"
+  material: "/delight/render/shadow_map.material"
 }
 materials {
   name: "model"

@@ -1,4 +1,4 @@
-local lights = require "lights.lights"
+local lights = require "delight.lights"
 
 --
 -- projection that centers content with maintained aspect ratio and optional zoom
@@ -35,6 +35,7 @@ end
 function init(self)
 	self.occluder_pred = render.predicate({"light_occluder"})
 	self.tile_pred = render.predicate({"tile"})
+	self.light_tile_pred = render.predicate({"light_tile"})
 	self.gui_pred = render.predicate({"gui"})
 	self.text_pred = render.predicate({"text"})
 	self.particle_pred = render.predicate({"particle"})
@@ -89,7 +90,7 @@ function update(self)
 	render.set_blend_func(render.BLEND_SRC_ALPHA, render.BLEND_ONE_MINUS_SRC_ALPHA)
 	render.disable_state(render.STATE_CULL_FACE)
 
-	lights.draw(self.view, get_projection(self), self.occluder_pred)
+	lights.draw(self.view, get_projection(self), self.occluder_pred, self.light_tile_pred)
 	render.draw(self.tile_pred, {frustum = frustum})
 	render.draw(self.particle_pred, {frustum = frustum})
 	render.draw_debug3d()

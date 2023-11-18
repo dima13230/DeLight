@@ -1,4 +1,4 @@
-local core_ex = require("scripts.utils.core_extended")
+local core_ex = require("delight.utils.core_extended")
 
 local M = {}
 
@@ -122,7 +122,7 @@ local function draw_occluder(light, view, projection, occluder_predicate)
 	render.set_render_target(render.RENDER_TARGET_DEFAULT)
 end
 
-local function draw_light_sprite(sprite, view, light_sprite_predicate)
+local function draw_light_sprite(view, light_sprite_predicate)
 	-- Draw occluder
 	render.set_depth_mask(false)
 	render.disable_state(render.STATE_DEPTH_TEST)
@@ -153,13 +153,13 @@ local function draw_light_sprite(sprite, view, light_sprite_predicate)
 	
 	for i, light in pairs(lights) do
 		if light.enabled then
-			render.enable_texture(i+1, light.shadowmap, render.BUFFER_COLOR_BIT)
+			--render.enable_texture(i+1, light.shadowmap, render.BUFFER_COLOR_BIT)
 		end
 	end
 	render.draw(light_sprite_predicate, {constants = constants})
 	for i, light in pairs(lights) do
 		if light.enabled then
-			render.disable_texture(i+1)
+			--render.disable_texture(i+1)
 		end
 	end
 
@@ -228,6 +228,8 @@ function M.draw(view, projection, occluder_predicate, light_sprite_predicate)
 	local size = math.max(width, height)
 	local size_changed = render_target_size ~= size
 	render_target_size = size
+
+	draw_light_sprite(view, light_sprite_predicate)
 	
 	for i,light in pairs(lights) do
 		if light.remove then
@@ -251,8 +253,6 @@ function M.draw(view, projection, occluder_predicate, light_sprite_predicate)
 			end
 		end
 	end
-	
-	draw_light_sprite(sprite, view, light_sprite_predicate)
 end
 
 
