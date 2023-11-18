@@ -1,4 +1,4 @@
-go.property("normal_map_enabled", true)
+go.property("normal_map_enabled", false)
 go.property("normal_height", 1.0)
 go.property("shininess", 32.0)
 
