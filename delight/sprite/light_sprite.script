@@ -1,0 +1,64 @@
+go.property("normal_map", resource.atlas())
+go.property("normal_height", 1.0)
+go.property("shininess", 32.0)
+
+local lights = require "render.lights.lights"
+
+function init(self)
+	self.position = go.get_position()
+	self.size = go.get("#sprite", "size")
+	go.set("#sprite", "shininess", vmath.vector4(self.shininess, 0, 0, 0))
+	go.set("#sprite", "normal_height", vmath.vector4(self.normal_height + 1, 0, 0, 0))
+	go.set("#sprite", "normal_set", vmath.vector4(self.normal_map ~= nil and 1 or 0, 0, 0, 0))
+	
+	self.sprite = lights.add_sprite({
+		position = self.position,
+		size = self.size,
+		normal_map = self.normal_map,
+		normal_height = self.normal_height,
+		shininess = self.shininess
+	})	
+end
+
+function final(self)
+	lights.remove_sprite(self.sprite)
+end
+
+function update(self, dt)
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function fixed_update(self, dt)
+	-- This function is called if 'Fixed Update Frequency' is enabled in the Engine section of game.project
+	-- Can be coupled with fixed updates of the physics simulation if 'Use Fixed Timestep' is enabled in
+	-- Physics section of game.project
+	-- Add update code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function on_message(self, message_id, message, sender)
+	-- Add message-handling code here
+	-- Learn more: https://defold.com/manuals/message-passing/
+	-- Remove this function if not needed
+end
+
+function on_input(self, action_id, action)
+	-- Add input-handling code here. The game object this script is attached to
+	-- must have acquired input focus:
+	--
+	--    msg.post(".", "acquire_input_focus")
+	--
+	-- All mapped input bindings will be received. Mouse and touch input will
+	-- be received regardless of where on the screen it happened.
+	-- Learn more: https://defold.com/manuals/input/
+	-- Remove this function if not needed
+end
+
+function on_reload(self)
+	-- Add reload-handling code here
+	-- Learn more: https://defold.com/manuals/hot-reload/
+	-- Remove this function if not needed
+end
