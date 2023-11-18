@@ -23,8 +23,8 @@ instances {
   id: "light"
   prototype: "/example/light.go"
   position {
-    x: -334.0
-    y: -12.0
+    x: -225.0
+    y: 122.0
     z: 0.0
   }
   rotation {

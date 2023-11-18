@@ -74,35 +74,6 @@ sampler2D select_shadowmap(int index) {
 	}
 }
 
-// Function to convert diffuse texture to height map
-float diffuseToHeight(sampler2D diffuseTexture, vec2 uv) {
-	// Sample the grayscale value from the diffuse texture
-	float grayscale = texture2D(diffuseTexture, uv).r;
-
-	// You may need to adjust the scale factor based on your specific requirements
-	float height = grayscale * 0.1; // Adjust the scale factor as needed
-
-	return height;
-}
-
-// Sobel operator function to calculate gradients
-vec2 sobelOperator(vec2 uv, vec2 texelSize) {
-	float h1 = diffuseToHeight(texture_sampler, uv + texelSize * vec2(-1, -1));
-	float h2 = diffuseToHeight(texture_sampler, uv + texelSize * vec2(0, -1));
-	float h3 = diffuseToHeight(texture_sampler, uv + texelSize * vec2(1, -1));
-	float h4 = diffuseToHeight(texture_sampler, uv + texelSize * vec2(-1, 0));
-	float h5 = diffuseToHeight(texture_sampler, uv + texelSize * vec2(0, 0));
-	float h6 = diffuseToHeight(texture_sampler, uv + texelSize * vec2(1, 0));
-	float h7 = diffuseToHeight(texture_sampler, uv + texelSize * vec2(-1, 1));
-	float h8 = diffuseToHeight(texture_sampler, uv + texelSize * vec2(0, 1));
-	float h9 = diffuseToHeight(texture_sampler, uv + texelSize * vec2(1, 1));
-
-	float sobelX = h3 + 2.0 * h6 + h9 - (h1 + 2.0 * h4 + h7);
-	float sobelY = h1 + 2.0 * h2 + h3 - (h7 + 2.0 * h8 + h9);
-
-	return vec2(sobelX, sobelY);
-}
-
 // Function to calculate the normal map from a diffuse texture
 vec3 calculateNormalMap(vec2 texcoord, sampler2D diffuseTexture)
 {
@@ -128,13 +99,6 @@ vec3 calculateNormalMap(vec2 texcoord, sampler2D diffuseTexture)
 void main() {
 	// Sample the texture
 	lowp vec4 texColor = texture2D(texture_sampler, var_texcoord0);
-
-	//lowp vec2 texelSize = 1.0 / vec2(texture_size.xy);
-	// Calculate the Sobel gradients
-	//lowp vec2 sobelGradients = sobelOperator(var_texcoord0, texelSize);
-
-	// Calculate height map
-	//lowp float height = sqrt(sobelGradients.x * sobelGradients.x + sobelGradients.y * sobelGradients.y);
 
 	// Normalize the Sobel gradients to get the normal
 	lowp vec3 normal = calculateNormalMap(var_texcoord0, texture_sampler);
@@ -176,7 +140,7 @@ void main() {
 			lowp vec3 lightDir = normalize(lightPositions[i].xyz - var_position.xyz);
 
 			// Calculate the diffuse lighting
-			lowp float diffuse = max(dot(normal, lightDir), 0.0);
+			lowp float diffuse = max(dot(normal * 0.5 + 0.5, lightDir), 0.0);
 
 			// Calculate the specular lighting
 			lowp vec3 viewDir = normalize(-var_position.xyz);
@@ -201,4 +165,5 @@ void main() {
 	lowp vec4 diffuseColor = texColor * vec4(finalColor + ambient_color);
 
 	gl_FragColor = diffuseColor;
+	//gl_FragColor = vec4(normal * 0.5 + 0.5, 1.0);
 }
