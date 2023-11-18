@@ -15,8 +15,11 @@ title = DeLight
 include_dirs = delight
 
 [render]
-clear_color_red = 0.3
-clear_color_green = 0.3
-clear_color_blue = 0.3
+clear_color_red = 0.0
+clear_color_green = 0.0
+clear_color_blue = 0.0
 clear_color_alpha = 1.0
+
+[input]
+game_binding = /input/game.input_bindingc
 

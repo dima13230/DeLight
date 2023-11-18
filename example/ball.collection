@@ -3,7 +3,6 @@ scale_along_z: 0
 embedded_instances {
   id: "go"
   children: "camera"
-  children: "go1"
   data: "components {\n"
   "  id: \"ball\"\n"
   "  component: \"/example/ball.script\"\n"
@@ -22,8 +21,8 @@ embedded_instances {
   "  }\n"
   "}\n"
   "components {\n"
-  "  id: \"lightsource\"\n"
-  "  component: \"/delight/lightsource.script\"\n"
+  "  id: \"light_sprite\"\n"
+  "  component: \"/delight/sprite/light_sprite.script\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"
@@ -36,9 +35,14 @@ embedded_instances {
   "    w: 1.0\n"
   "  }\n"
   "  properties {\n"
-  "    id: \"offset\"\n"
-  "    value: \"200.0, 0.0, 0.0\"\n"
-  "    type: PROPERTY_TYPE_VECTOR3\n"
+  "    id: \"normal_height\"\n"
+  "    value: \"2.0\"\n"
+  "    type: PROPERTY_TYPE_NUMBER\n"
+  "  }\n"
+  "  properties {\n"
+  "    id: \"shininess\"\n"
+  "    value: \"0.1\"\n"
+  "    type: PROPERTY_TYPE_NUMBER\n"
   "  }\n"
   "  property_decls {\n"
   "  }\n"
@@ -77,6 +81,26 @@ embedded_instances {
   "angular_damping: 0.0\\n"
   "locked_rotation: true\\n"
   "bullet: false\\n"
+  "\"\n"
+  "  position {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "  }\n"
+  "  rotation {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "    w: 1.0\n"
+  "  }\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"sprite\"\n"
+  "  type: \"sprite\"\n"
+  "  data: \"tile_set: \\\"/example/asset/images.atlas\\\"\\n"
+  "default_animation: \\\"ball_red_small_alt\\\"\\n"
+  "material: \\\"/delight/materials/light_affected_sprite.material\\\"\\n"
+  "blend_mode: BLEND_MODE_ALPHA\\n"
   "\"\n"
   "  position {\n"
   "    x: 0.0\n"
@@ -148,49 +172,6 @@ embedded_instances {
   scale3 {
     x: 1.0
     y: 1.0
-    z: 1.0
-  }
-}
-embedded_instances {
-  id: "go1"
-  data: "embedded_components {\n"
-  "  id: \"model\"\n"
-  "  type: \"model\"\n"
-  "  data: \"mesh: \\\"/builtins/assets/meshes/quad.dae\\\"\\n"
-  "material: \\\"/delight/materials/light_affected_sprite.material\\\"\\n"
-  "textures: \\\"/example/asset/ball_red_small_alt.png\\\"\\n"
-  "skeleton: \\\"\\\"\\n"
-  "animations: \\\"\\\"\\n"
-  "default_animation: \\\"\\\"\\n"
-  "name: \\\"{{NAME}}\\\"\\n"
-  "\"\n"
-  "  position {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "  }\n"
-  "  rotation {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "    w: 1.0\n"
-  "  }\n"
-  "}\n"
-  ""
-  position {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale3 {
-    x: 32.0
-    y: 32.0
     z: 1.0
   }
 }

@@ -1,6 +1,6 @@
 components {
   id: "lightsource"
-  component: "/lights/lightsource.script"
+  component: "/delight/lightsource.script"
   position {
     x: 0.0
     y: 0.0

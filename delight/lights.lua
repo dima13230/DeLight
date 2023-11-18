@@ -132,6 +132,8 @@ local function draw_light_sprite(view, light_sprite_predicate)
 	render.disable_state(render.STATE_CULL_FACE)
 
 	local constants = render.constant_buffer()
+
+	constants.ambient_color = clear_color
 	constants.lightPositions = core_ex.newtable(vmath.vector4(), MAX_LIGHT_COUNT)
 	constants.lightColors = core_ex.newtable(vmath.vector4(), MAX_LIGHT_COUNT)
 	constants.lightRadiuses = core_ex.newtable(vmath.vector4(), MAX_LIGHT_COUNT)

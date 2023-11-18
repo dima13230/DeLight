@@ -89,7 +89,7 @@ function init(self)
 		radius = self.radius,
 		enabled = self.enabled,
 		draw_point = self.draw_point,
-		point_transparency = self.point_transparency,
+		point_transparency = self.point_transparency * 0.5,
 	})
 end
 

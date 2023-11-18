@@ -25,25 +25,25 @@ end
 function on_input(self, action_id, action)
 	if action_id == hash("left") then
 		if action.pressed then
-			self.direction.x = -1
+			self.direction.x = 1
 		elseif action.released and self.direction.x == -1 then
 			self.direction.x = 0
 		end
 	elseif action_id == hash("right") then
 		if action.pressed then
-			self.direction.x = 1
+			self.direction.x = -1
 		elseif action.released and self.direction.x == 1 then
 			self.direction.x = 0
 		end
 	elseif action_id == hash("up") then
 		if action.pressed then
-			self.direction.y = 1
+			self.direction.y = -1
 		elseif action.released and self.direction.y == 1 then
 			self.direction.y = 0
 		end
 	elseif action_id == hash("down") then
 		if action.pressed then
-			self.direction.y = -1
+			self.direction.y = 1
 		elseif action.released and self.direction.y == -1 then
 			self.direction.y = 0
 		end

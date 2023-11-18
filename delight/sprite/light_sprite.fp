@@ -1,7 +1,6 @@
-//#version 400 es
 #extension GL_ARB_bindless_texture : enable
 
-#define PI 3.14
+#define PI 3.141
 
 // Define the maximum number of lights
 #define MAX_LIGHTS 9
@@ -20,6 +19,7 @@ uniform vec4 lightAngles[MAX_LIGHTS];
 
 uniform vec4 lightEnabled[MAX_LIGHTS];
 
+uniform vec4 texture_size;
 uniform vec4 normal_set;
 uniform vec4 normal_height;
 uniform vec4 shininess;
@@ -27,7 +27,6 @@ uniform vec4 shininess;
 uniform vec4 ambient_color;
 uniform lowp vec4 tint;
 uniform lowp sampler2D texture_sampler;
-uniform lowp sampler2D normal_map_sampler;
 
 uniform lowp sampler2D shadowmap_sampler_0;
 uniform lowp sampler2D shadowmap_sampler_1;
@@ -75,18 +74,39 @@ sampler2D select_shadowmap(int index) {
 	}
 }
 
-// Sample from the 1D distance map
-float sample_from_distance_map(vec2 coord, float r) {
-	return step(r, texture2D(texture_sampler, coord).r);
+// Sobel operator function to calculate gradients
+vec2 sobelOperator(sampler2D sampler, vec2 uv, vec2 texelSize) {
+	float h1 = texture2D(sampler, uv + texelSize * vec2(-1, -1)).r;
+	float h2 = texture2D(sampler, uv + texelSize * vec2(0, -1)).r;
+	float h3 = texture2D(sampler, uv + texelSize * vec2(1, -1)).r;
+	float h4 = texture2D(sampler, uv + texelSize * vec2(-1, 0)).r;
+	float h5 = texture2D(sampler, uv + texelSize * vec2(0, 0)).r;
+	float h6 = texture2D(sampler, uv + texelSize * vec2(1, 0)).r;
+	float h7 = texture2D(sampler, uv + texelSize * vec2(-1, 1)).r;
+	float h8 = texture2D(sampler, uv + texelSize * vec2(0, 1)).r;
+	float h9 = texture2D(sampler, uv + texelSize * vec2(1, 1)).r;
+
+	float sobelX = h3 + 2.0 * h6 + h9 - (h1 + 2.0 * h4 + h7);
+	float sobelY = h1 + 2.0 * h2 + h3 - (h7 + 2.0 * h8 + h9);
+
+	return vec2(sobelX, sobelY);
 }
 
 void main() {
 	// Sample the texture
 	lowp vec4 texColor = texture2D(texture_sampler, var_texcoord0);
 
-	// Sample the normal map
-	lowp vec3 normal = texture2D(normal_map_sampler, var_texcoord0).rgb;
-	normal = normalize(normal * normal_height.x - 1.0);
+	// Calculate the normal vector using Sobel operator
+	lowp vec2 texelSize = 1.0 / vec2(texture_size.xy);
+	// Calculate the Sobel gradients
+	lowp vec2 sobelGradients = sobelOperator(texture_sampler, var_texcoord0, texelSize);
+
+	// Calculate height map
+	lowp float height = sqrt(sobelGradients.x * sobelGradients.x + sobelGradients.y * sobelGradients.y);
+
+	// Normalize the Sobel gradients to get the normal
+	lowp vec3 normal = normalize(vec3(sobelGradients, 1.0));
+	normal = normal * normal_height.x - 1.0;
 	
 	// Accumulate lighting contributions
 	lowp int arlen = 0;
