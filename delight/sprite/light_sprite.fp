@@ -78,12 +78,8 @@ void main() {
 	// Sample the texture
 	lowp vec4 texColor = texture2D(texture_sampler, var_texcoord0);
 
-	// Calculate Sobel gradients
-	lowp vec3 dx = dFdx(texColor.rgb);
-	lowp vec3 dy = dFdy(texColor.rgb);
-
-	// Calculate the normal from the gradients
-	lowp vec3 normal = normalize(cross(dy, dx)) * normal_height.x;
+	vec3 normal = vec3(0.0, 0.0, 1.0);
+	normal = normalize( ( (texColor.xyz) - 0.5) * 2.0 ) * normal_height.x;
 
 	// Accumulate lighting contributions
 	lowp int arlen = 0;
