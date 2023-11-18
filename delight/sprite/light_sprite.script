@@ -10,7 +10,7 @@ function init(self)
 	go.set("#sprite", "shininess", vmath.vector4(self.shininess, 0, 0, 0))
 	go.set("#sprite", "normal_height", vmath.vector4(self.normal_height + 1, 0, 0, 0))
 	go.set("#sprite", "normal_set", vmath.vector4(self.normal_map_enabled and 1 or 0, 0, 0, 0))
-	go.set("#sprite", "texture_size", vmath.vector4(self.size.x, self.size.y, 0, 0))
+	--go.set("#sprite", "texture_size", vmath.vector4(self.size.x, self.size.y, 0, 0))
 	
 	self.sprite = lights.add_sprite({
 		position = self.position,

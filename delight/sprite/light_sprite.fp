@@ -103,19 +103,41 @@ vec2 sobelOperator(vec2 uv, vec2 texelSize) {
 	return vec2(sobelX, sobelY);
 }
 
+// Function to calculate the normal map from a diffuse texture
+vec3 calculateNormalMap(vec2 texcoord, sampler2D diffuseTexture)
+{
+	// Sample the diffuse texture
+	vec3 center = texture2D(diffuseTexture, texcoord).rgb;
+	vec3 right = texture2D(diffuseTexture, texcoord + vec2(1.0, 0.0) / textureSize(diffuseTexture, 0)).rgb;
+	vec3 up = texture2D(diffuseTexture, texcoord + vec2(0.0, 1.0) / textureSize(diffuseTexture, 0)).rgb;
+
+	// Calculate the normal in tangent space
+	vec3 dx = normalize(right - center);
+	vec3 dy = normalize(up - center);
+	vec3 normal = cross(dx, dy);
+
+	// Convert the normal to world space
+	normal = normalize(normal);
+
+	// Map the normal from [0, 1] to [-1, 1]
+	normal = normal * 2.0 - 1.0;
+
+	return normal;
+}
+
 void main() {
 	// Sample the texture
 	lowp vec4 texColor = texture2D(texture_sampler, var_texcoord0);
 
-	lowp vec2 texelSize = 1.0 / vec2(texture_size.xy);
+	//lowp vec2 texelSize = 1.0 / vec2(texture_size.xy);
 	// Calculate the Sobel gradients
-	lowp vec2 sobelGradients = sobelOperator(var_texcoord0, texelSize);
+	//lowp vec2 sobelGradients = sobelOperator(var_texcoord0, texelSize);
 
 	// Calculate height map
-	lowp float height = sqrt(sobelGradients.x * sobelGradients.x + sobelGradients.y * sobelGradients.y);
+	//lowp float height = sqrt(sobelGradients.x * sobelGradients.x + sobelGradients.y * sobelGradients.y);
 
 	// Normalize the Sobel gradients to get the normal
-	lowp vec3 normal = normalize(vec3(sobelGradients, 1.0));
+	lowp vec3 normal = calculateNormalMap(var_texcoord0, texture_sampler);
 	normal = normal * normal_height.x - 1.0;
 	
 	// Accumulate lighting contributions
