@@ -1,9 +1,34 @@
+components {
+  id: "light_sprite"
+  component: "/delight/sprite/light_sprite.script"
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  properties {
+    id: "normal_height"
+    value: "2.0"
+    type: PROPERTY_TYPE_NUMBER
+  }
+  properties {
+    id: "shininess"
+    value: "1.0"
+    type: PROPERTY_TYPE_NUMBER
+  }
+}
 embedded_components {
   id: "sprite"
   type: "sprite"
   data: "tile_set: \"/example/asset/images.atlas\"\n"
   "default_animation: \"block_large\"\n"
-  "material: \"/lights/materials/light_occluder_sprite.material\"\n"
+  "material: \"/delight/materials/light_affected_sprite.material\"\n"
   "blend_mode: BLEND_MODE_ALPHA\n"
   ""
   position {

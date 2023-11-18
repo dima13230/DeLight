@@ -75,16 +75,16 @@ sampler2D select_shadowmap(int index) {
 }
 
 // Sobel operator function to calculate gradients
-vec2 sobelOperator(sampler2D sampler, vec2 uv, vec2 texelSize) {
-	float h1 = texture2D(sampler, uv + texelSize * vec2(-1, -1)).r;
-	float h2 = texture2D(sampler, uv + texelSize * vec2(0, -1)).r;
-	float h3 = texture2D(sampler, uv + texelSize * vec2(1, -1)).r;
-	float h4 = texture2D(sampler, uv + texelSize * vec2(-1, 0)).r;
-	float h5 = texture2D(sampler, uv + texelSize * vec2(0, 0)).r;
-	float h6 = texture2D(sampler, uv + texelSize * vec2(1, 0)).r;
-	float h7 = texture2D(sampler, uv + texelSize * vec2(-1, 1)).r;
-	float h8 = texture2D(sampler, uv + texelSize * vec2(0, 1)).r;
-	float h9 = texture2D(sampler, uv + texelSize * vec2(1, 1)).r;
+vec2 sobelOperator(vec2 uv, vec2 texelSize) {
+	float h1 = texture2D(texture_sampler, uv + texelSize * vec2(-1, -1)).r;
+	float h2 = texture2D(texture_sampler, uv + texelSize * vec2(0, -1)).r;
+	float h3 = texture2D(texture_sampler, uv + texelSize * vec2(1, -1)).r;
+	float h4 = texture2D(texture_sampler, uv + texelSize * vec2(-1, 0)).r;
+	float h5 = texture2D(texture_sampler, uv + texelSize * vec2(0, 0)).r;
+	float h6 = texture2D(texture_sampler, uv + texelSize * vec2(1, 0)).r;
+	float h7 = texture2D(texture_sampler, uv + texelSize * vec2(-1, 1)).r;
+	float h8 = texture2D(texture_sampler, uv + texelSize * vec2(0, 1)).r;
+	float h9 = texture2D(texture_sampler, uv + texelSize * vec2(1, 1)).r;
 
 	float sobelX = h3 + 2.0 * h6 + h9 - (h1 + 2.0 * h4 + h7);
 	float sobelY = h1 + 2.0 * h2 + h3 - (h7 + 2.0 * h8 + h9);
@@ -96,10 +96,9 @@ void main() {
 	// Sample the texture
 	lowp vec4 texColor = texture2D(texture_sampler, var_texcoord0);
 
-	// Calculate the normal vector using Sobel operator
 	lowp vec2 texelSize = 1.0 / vec2(texture_size.xy);
 	// Calculate the Sobel gradients
-	lowp vec2 sobelGradients = sobelOperator(texture_sampler, var_texcoord0, texelSize);
+	lowp vec2 sobelGradients = sobelOperator(var_texcoord0, texelSize);
 
 	// Calculate height map
 	lowp float height = sqrt(sobelGradients.x * sobelGradients.x + sobelGradients.y * sobelGradients.y);
