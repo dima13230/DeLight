@@ -1,6 +1,6 @@
 #extension GL_ARB_bindless_texture : enable
 
-#define PI 3.141
+#define PI 3.14
 
 // Define the maximum number of lights
 #define MAX_LIGHTS 9
@@ -19,7 +19,6 @@ uniform vec4 lightAngles[MAX_LIGHTS];
 
 uniform vec4 lightEnabled[MAX_LIGHTS];
 
-uniform vec4 texture_size;
 uniform vec4 normal_set;
 uniform vec4 normal_height;
 uniform vec4 shininess;
@@ -27,6 +26,7 @@ uniform vec4 shininess;
 uniform vec4 ambient_color;
 uniform lowp vec4 tint;
 uniform lowp sampler2D texture_sampler;
+uniform lowp sampler2D normal_map_sampler;
 
 uniform lowp sampler2D shadowmap_sampler_0;
 uniform lowp sampler2D shadowmap_sampler_1;
@@ -74,37 +74,17 @@ sampler2D select_shadowmap(int index) {
 	}
 }
 
-vec3 calculateNormalMap(vec2 texcoord, sampler2D diffuseTexture)
-{
-	// Sample the diffuse texture at four neighboring texcoords
-	vec3 center = texture2D(diffuseTexture, texcoord).rgb;
-	vec3 up = texture2D(diffuseTexture, texcoord + vec2(0.0, 1.0) / textureSize(diffuseTexture, 0)).rgb;
-	vec3 down = texture2D(diffuseTexture, texcoord - vec2(0.0, 1.0) / textureSize(diffuseTexture, 0)).rgb;
-	vec3 left = texture2D(diffuseTexture, texcoord + vec2(1.0, 0.0) / textureSize(diffuseTexture, 0)).rgb;
-	vec3 right = texture2D(diffuseTexture, texcoord - vec2(1.0, 0.0) / textureSize(diffuseTexture, 0)).rgb;
-
-	// Calculate the normal using the bilinear interpolation method
-	vec3 dx = normalize(right - left);
-	vec3 dy = normalize(up - down);
-	vec3 normal = cross(dx, dy);
-
-	// Convert the normal to world space
-	normal = normalize(normal);
-
-	// Map the normal from [0, 1] to [-1, 1]
-	normal = normal * 2.0 - 1.0;
-
-	return normal;
-}
-
 void main() {
 	// Sample the texture
 	lowp vec4 texColor = texture2D(texture_sampler, var_texcoord0);
 
-	// Normalize the Sobel gradients to get the normal
-	lowp vec3 normal = calculateNormalMap(var_texcoord0, texture_sampler);
-	normal = normal * normal_height.x - 1.0;
-	
+	// Calculate Sobel gradients
+	lowp vec3 dx = dFdx(texColor.rgb);
+	lowp vec3 dy = dFdy(texColor.rgb);
+
+	// Calculate the normal from the gradients
+	lowp vec3 normal = normalize(cross(dy, dx)) * normal_height.x;
+
 	// Accumulate lighting contributions
 	lowp int arlen = 0;
 	for (; arlen < MAX_LIGHTS; ++arlen) {
@@ -122,11 +102,11 @@ void main() {
 
 		// Continue if not inside angle
 		if (theta > lightAngles[i].y || theta < lightAngles[i].w || (theta > 0.0 && theta < lightAngles[i].x) || (theta < 0.0 && theta > lightAngles[i].z)) 
-			continue;
+		continue;
 
 		if (lightEnabled[i].x == 0)
-			continue;
-			
+		continue;
+
 		// Calculate the distance from the light
 		lowp float distance = length(lightPositions[i].xyz - var_position.xyz);
 
@@ -141,7 +121,7 @@ void main() {
 			lowp vec3 lightDir = normalize(lightPositions[i].xyz - var_position.xyz);
 
 			// Calculate the diffuse lighting
-			lowp float diffuse = max(dot(normal * 0.5 + 0.5, lightDir), 0.0);
+			lowp float diffuse = max(dot(normal, lightDir), 0.0);
 
 			// Calculate the specular lighting
 			lowp vec3 viewDir = normalize(-var_position.xyz);
@@ -151,7 +131,7 @@ void main() {
 			// Apply the diffuse and specular lighting to the light color
 			color *= vec4(diffuse + specular);
 		}
-		
+
 		// Sample the shadow map
 		lowp vec2 shadowMapCoord = (lightPositions[i].xy + var_position.xy) * 0.5;
 		float shadow = texture2D(select_shadowmap(i), shadowMapCoord).r;
