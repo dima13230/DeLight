@@ -23,6 +23,7 @@ uniform vec4 normal_set;
 uniform vec4 normal_height;
 uniform vec4 shininess;
 
+uniform vec4 edge_threshold;
 uniform vec4 occluder_rim_factor;
 
 uniform vec4 ambient_color;
@@ -127,7 +128,7 @@ void main() {
 		}
 
 		// If the weighted sum is above a threshold, it's an edge pixel
-		float isEdge = step(0.15, abs(sum));
+		float isEdge = step(edge_threshold.x, abs(sum));
 		
 		// Apply the falloff curve to the light color
 		color *= vec4(falloffCurve * isEdge);
