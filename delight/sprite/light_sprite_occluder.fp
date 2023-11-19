@@ -108,14 +108,32 @@ void main() {
 		lowp float distance = length(lightPositions[i].xyz - var_position.xyz);
 
 		// Calculate the falloff curve
-		lowp float falloffCurve = smoothstep(lightRadiuses[i].x, 0.0, distance);
+		lowp float falloffCurve = smoothstep(lightRadiuses[i].x / 3, 0.0, distance);
 
+		// Sobel edge detection kernel
+		float kernel[9] = float[](-1, -2, -1, -2, 12, -2, -1, -2, -1);
+
+		// Calculate the depth of the current pixel
+		float currentDepth = texture2D(texture_sampler, var_texcoord0).r;
+
+		// Calculate the weighted sum of neighbors using the Sobel kernel
+		float sum = 0.0;
+		for (int i = 0; i < 3; ++i) {
+			for (int j = 0; j < 3; ++j) {
+				vec2 offset = vec2(float(i - 1), float(j - 1)) / textureSize(texture_sampler, 0);
+				float neighborDepth = texture2D(texture_sampler, var_texcoord0 + offset).r;
+				sum += kernel[i * 3 + j] * neighborDepth;
+			}
+		}
+
+		// If the weighted sum is above a threshold, it's an edge pixel
+		float isEdge = step(0.15, abs(sum));
+		
 		// Apply the falloff curve to the light color
-		color *= vec4(falloffCurve);
+		color *= vec4(falloffCurve * isEdge);
 
 		// Calculate the rim factor based on the dot product between normal and light direction
 		lowp float rimFactor = smoothstep(0.0, 0.1, occluder_rim_factor.x - length(lightPositions[i].xy - var_position.xy) / lightRadiuses[i].x);
-		color *= rimFactor;
 		
 		if (normal_set.x == 1) {
 			// Calculate the light direction

@@ -73,6 +73,14 @@ instances {
     z: 0.0
     w: 1.0
   }
+  component_properties {
+    id: "light_sprite"
+    properties {
+      id: "normal_map_enabled"
+      value: "true"
+      type: PROPERTY_TYPE_BOOLEAN
+    }
+  }
   scale3 {
     x: 1.0
     y: 1.0
@@ -118,7 +126,7 @@ embedded_instances {
   "  }\n"
   "  properties {\n"
   "    id: \"ambient_light_color\"\n"
-  "    value: \"0.3, 0.3, 0.3, 1.0\"\n"
+  "    value: \"0.1, 0.1, 0.1, 1.0\"\n"
   "    type: PROPERTY_TYPE_VECTOR4\n"
   "  }\n"
   "  property_decls {\n"
