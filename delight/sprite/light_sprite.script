@@ -2,6 +2,10 @@ go.property("normal_map_enabled", false)
 go.property("normal_height", 1.0)
 go.property("shininess", 32.0)
 
+go.property("is_occluder", false)
+go.property("occluder_rim_factor", 0.5)
+go.property("occluder_edge_detection_threshold", 0.15)
+
 local lights = require "delight.lights"
 
 function init(self)
@@ -10,6 +14,12 @@ function init(self)
 	go.set("#sprite", "shininess", vmath.vector4(self.shininess, 0, 0, 0))
 	go.set("#sprite", "normal_height", vmath.vector4(self.normal_height + 1, 0, 0, 0))
 	go.set("#sprite", "normal_set", vmath.vector4(self.normal_map_enabled and 1 or 0, 0, 0, 0))
+
+	if self.is_occluder then
+		go.set("#sprite", "edge_threshold", vmath.vector4(self.occluder_edge_detection_threshold, 0, 0, 0))
+		go.set("#sprite", "occluder_rim_factor", vmath.vector4(self.occluder_rim_factor, 0, 0, 0))
+	end
+	
 	--go.set("#sprite", "texture_size", vmath.vector4(self.size.x, self.size.y, 0, 0))
 	
 	self.sprite = lights.add_sprite({
