@@ -23,6 +23,8 @@ uniform vec4 normal_set;
 uniform vec4 normal_height;
 uniform vec4 shininess;
 
+uniform vec4 occluder_rim_factor;
+
 uniform vec4 ambient_color;
 uniform lowp vec4 tint;
 uniform lowp sampler2D texture_sampler;
@@ -79,7 +81,7 @@ void main() {
 
 	vec3 normal = vec3(0.0, 0.0, 1.0);
 	normal = normalize( ( (texColor.xyz) - 0.5) * 2.0 ) * normal_height.x;
-
+	
 	// Accumulate lighting contributions
 	lowp int arlen = 0;
 	for (; arlen < MAX_LIGHTS; ++arlen) {
@@ -111,6 +113,10 @@ void main() {
 		// Apply the falloff curve to the light color
 		color *= vec4(falloffCurve);
 
+		// Calculate the rim factor based on the dot product between normal and light direction
+		lowp float rimFactor = smoothstep(0.0, 0.1, occluder_rim_factor.x - length(lightPositions[i].xy - var_position.xy) / lightRadiuses[i].x);
+		color *= rimFactor;
+		
 		if (normal_set.x == 1) {
 			// Calculate the light direction
 			lowp vec3 lightDir = normalize(lightPositions[i].xyz - var_position.xyz);
@@ -127,6 +133,8 @@ void main() {
 			color *= vec4(diffuse + 0.5 * specular);
 		}
 
+		color *= rimFactor;
+		
 		// Sample the shadow map
 		lowp vec2 shadowMapCoord = (lightPositions[i].xy + var_position.xy) * 0.5;
 		float shadow = texture2D(select_shadowmap(i), shadowMapCoord).r;
@@ -139,6 +147,6 @@ void main() {
 
 	// Combine diffuse and texture color
 	lowp vec4 diffuseColor = texColor * vec4(finalColor + ambient_color);
-
+	
 	gl_FragColor = diffuseColor;
 }

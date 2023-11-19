@@ -40,11 +40,11 @@ instances {
   }
 }
 instances {
-  id: "block_l"
-  prototype: "/example/block_l.go"
+  id: "block_large"
+  prototype: "/example/block_large.go"
   position {
-    x: -56.0
-    y: 70.0
+    x: -115.0
+    y: 191.0
     z: 0.0
   }
   rotation {
@@ -60,11 +60,11 @@ instances {
   }
 }
 instances {
-  id: "block_large"
+  id: "block_large1"
   prototype: "/example/block_large.go"
   position {
-    x: -115.0
-    y: 191.0
+    x: -59.0
+    y: 29.0
     z: 0.0
   }
   rotation {
