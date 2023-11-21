@@ -185,15 +185,15 @@ void main() {
 		lowp float theta = atan(lightToSpriteDir.y, lightToSpriteDir.x);
 
 		// Calculate shadow map coordinates
-		lowp float shadowCoord = theta / (2.0 * PI);
+		lowp float shadowCoord = ((theta / (1.5 * PI * PI)) + 1.0) / 2;
 
 		// Sample from the specified shadow map
 		float shadow_intensity = texture2D(select_shadowmap(i), vec2(shadowCoord, 0.5)).r;
 		
-		if (shadow_intensity > SHADOW_THRESHOLD)
-		{
-			color = vec4(shadow_intensity);
-		}
+		//if (shadow_intensity > SHADOW_THRESHOLD)
+		//{
+			//color *= vec4(shadow_intensity);
+		//}
 		
 		finalColor += color;
 	}

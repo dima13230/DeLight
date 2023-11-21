@@ -3,7 +3,9 @@ go.property("speed", 300)
 function init(self)
 	msg.post(".", "acquire_input_focus")
 	msg.post("@render:", "use_fixed_fit_projection", { near = -10, far = 10})
-	msg.post("camera#camera", "acquire_camera_focus")
+	msg.post("/camera#camera1", "acquire_camera_focus")
+	msg.post("/camera#camera1", "follow")
+		
 	self.direction = vmath.vector3(0)
 
 	--go.animate("/blue_light#lightsource", "radius", go.PLAYBACK_LOOP_PINGPONG, 0, go.EASING_INOUTQUAD, 4.0)
