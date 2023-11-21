@@ -25,4 +25,6 @@ game_binding = /input/game.input_bindingc
 
 [physics]
 gravity_y = 0.0
+scale = 0.02
+debug = 0
 

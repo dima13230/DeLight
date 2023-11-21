@@ -2,6 +2,8 @@
 
 #define PI 3.14
 
+#define SHADOW_THRESHOLD 0.1
+
 // Define the maximum number of lights
 #define MAX_LIGHTS 9
 
@@ -39,6 +41,7 @@ uniform lowp sampler2D shadowmap_sampler_8;
 
 varying highp vec4 var_position;
 varying mediump vec2 var_texcoord0;
+varying mediump mat4 var_view_proj;
 
 sampler2D select_shadowmap(int index) {
 	if (index == 0) {
@@ -73,6 +76,46 @@ sampler2D select_shadowmap(int index) {
 	}
 }
 
+mat4 inverse(mat4 m) {
+	mat4 inv;
+	float det;
+
+	inv[0][0] = m[1][1] * m[2][2] * m[3][3] - m[1][1] * m[2][3] * m[3][2] - m[1][2] * m[2][1] * m[3][3] + m[1][2] * m[2][3] * m[3][1] + m[1][3] * m[2][1] * m[3][2] - m[1][3] * m[2][2] * m[3][1];
+	inv[0][1] = -m[0][1] * m[2][2] * m[3][3] + m[0][1] * m[2][3] * m[3][2] + m[0][2] * m[2][1] * m[3][3] - m[0][2] * m[2][3] * m[3][1] - m[0][3] * m[2][1] * m[3][2] + m[0][3] * m[2][2] * m[3][1];
+	inv[0][2] = m[0][1] * m[1][2] * m[3][3] - m[0][1] * m[1][3] * m[3][2] - m[0][2] * m[1][1] * m[3][3] + m[0][2] * m[1][3] * m[3][1] + m[0][3] * m[1][1] * m[3][2] - m[0][3] * m[1][2] * m[3][1];
+	inv[0][3] = -m[0][1] * m[1][2] * m[2][3] + m[0][1] * m[1][3] * m[2][2] + m[0][2] * m[1][1] * m[2][3] - m[0][2] * m[1][3] * m[2][1] - m[0][3] * m[1][1] * m[2][2] + m[0][3] * m[1][2] * m[2][1];
+
+	inv[1][0] = -m[1][0] * m[2][2] * m[3][3] + m[1][0] * m[2][3] * m[3][2] + m[1][2] * m[2][0] * m[3][3] - m[1][2] * m[2][3] * m[3][0] - m[1][3] * m[2][0] * m[3][2] + m[1][3] * m[2][2] * m[3][0];
+	inv[1][1] = m[0][0] * m[2][2] * m[3][3] - m[0][0] * m[2][3] * m[3][2] - m[0][2] * m[2][0] * m[3][3] + m[0][2] * m[2][3] * m[3][0] + m[0][3] * m[2][0] * m[3][2] - m[0][3] * m[2][2] * m[3][0];
+	inv[1][2] = -m[0][0] * m[1][2] * m[3][3] + m[0][0] * m[1][3] * m[3][2] + m[0][2] * m[1][0] * m[3][3] - m[0][2] * m[1][3] * m[3][0] - m[0][3] * m[1][0] * m[3][2] + m[0][3] * m[1][2] * m[3][0];
+	inv[1][3] = m[0][0] * m[1][2] * m[2][3] - m[0][0] * m[1][3] * m[2][2] - m[0][2] * m[1][0] * m[2][3] + m[0][2] * m[1][3] * m[2][0] + m[0][3] * m[1][0] * m[2][2] - m[0][3] * m[1][2] * m[2][0];
+
+	inv[2][0] = m[1][0] * m[2][1] * m[3][3] - m[1][0] * m[2][3] * m[3][1] - m[1][1] * m[2][0] * m[3][3] + m[1][1] * m[2][3] * m[3][0] + m[1][3] * m[2][0] * m[3][1] - m[1][3] * m[2][1] * m[3][0];
+	inv[2][1] = -m[0][0] * m[2][1] * m[3][3] + m[0][0] * m[2][3] * m[3][1] + m[0][1] * m[2][0] * m[3][3] - m[0][1] * m[2][3] * m[3][0] - m[0][3] * m[2][0] * m[3][1] + m[0][3] * m[2][1] * m[3][0];
+	inv[2][2] = m[0][0] * m[1][1] * m[3][3] - m[0][0] * m[1][3] * m[3][1] - m[0][1] * m[1][0] * m[3][3] + m[0][1] * m[1][3] * m[3][0] + m[0][3] * m[1][0] * m[3][1] - m[0][3] * m[1][1] * m[3][0];
+	inv[2][3] = -m[0][0] * m[1][1] * m[2][3] + m[0][0] * m[1][3] * m[2][1] + m[0][1] * m[1][0] * m[2][3] - m[0][1] * m[1][3] * m[2][0] - m[0][3] * m[1][0] * m[2][1] + m[0][3] * m[1][1] * m[2][0];
+
+	inv[3][0] = -m[1][0] * m[2][1] * m[3][2] + m[1][0] * m[2][2] * m[3][1] + m[1][1] * m[2][0] * m[3][2] - m[1][1] * m[2][2] * m[3][0] - m[1][2] * m[2][0] * m[3][1] + m[1][2] * m[2][1] * m[3][0];
+	inv[3][1] = m[0][0] * m[2][1] * m[3][2] - m[0][0] * m[2][2] * m[3][1] - m[0][1] * m[2][0] * m[3][2] + m[0][1] * m[2][2] * m[3][0] + m[0][2] * m[2][0] * m[3][1] - m[0][2] * m[2][1] * m[3][0];
+	inv[3][2] = -m[0][0] * m[1][1] * m[3][2] + m[0][0] * m[1][2] * m[3][1] + m[0][1] * m[1][0] * m[3][2] - m[0][1] * m[1][2] * m[3][0] - m[0][2] * m[1][0] * m[3][1] + m[0][2] * m[1][1] * m[3][0];
+	inv[3][3] = m[0][0] * m[1][1] * m[2][2] - m[0][0] * m[1][2] * m[2][1] - m[0][1] * m[1][0] * m[2][2] + m[0][1] * m[1][2] * m[2][0] + m[0][2] * m[1][0] * m[2][1] - m[0][2] * m[1][1] * m[2][0];
+
+	det = m[0][0] * inv[0][0] + m[0][1] * inv[1][0] + m[0][2] * inv[2][0] + m[0][3] * inv[3][0];
+
+	// Calculate determinant and divide by it
+	det = 1.0 / det;
+
+	// Multiply each element by the inverse of the determinant
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			inv[i][j] *= det;
+		}
+	}
+
+	return inv;
+}
+
+
 void main() {
 	// Sample the texture
 	lowp vec4 texColor = texture2D(texture_sampler, var_texcoord0);
@@ -91,13 +134,7 @@ void main() {
 
 	lowp vec4 finalColor = vec4(0);
 	for (int i = 0; i < arlen; ++i) {
-		lowp float theta = atan(var_texcoord0.y, var_texcoord0.x);
-
 		lowp vec4 color = vec4(lightColors[i].rgb, 1.0);
-
-		// Continue if not inside angle
-		if (theta > lightAngles[i].y || theta < lightAngles[i].w || (theta > 0.0 && theta < lightAngles[i].x) || (theta < 0.0 && theta > lightAngles[i].z)) 
-		continue;
 
 		if (lightEnabled[i].x == 0)
 		continue;
@@ -127,13 +164,37 @@ void main() {
 			color *= vec4(diffuse + 0.5 * specular);
 		}
 
-		// Sample the shadow map
-		lowp vec2 shadowMapCoord = (lightPositions[i].xy + var_position.xy) * 0.5;
-		float shadow = texture2D(select_shadowmap(i), shadowMapCoord).r;
+		// SHADOW MAP SEGMENT
+		// Adjust for viewport
+		//vec2 shadowmap_uv = (var_position.xy - shadowmapViewports[i].xy) / shadowmapViewports[i].zw;
 
-		// Apply the shadow to the light color
-		//color *= vec4(shadow);
+		// Sample from the shadow map
+		//float shadow_intensity = texture2D(select_shadowmap(i), shadowmap_uv).r;
 
+		mat4 inverseSpriteProjection = inverse(var_view_proj);
+		// Transform sprite position to the light's view space
+		vec4 lightSpacePosition = inverseSpriteProjection * var_position;
+
+		// Use only the x and y components for shadow mapping
+		vec2 shadowTexCoords = lightSpacePosition.xy / lightSpacePosition.w;
+
+		// Calculate the direction from the light to the sprite
+		vec3 lightToSpriteDir = normalize(lightPositions[i].xyz - var_position.xyz);
+
+		// Calculate the angle between the light direction and the sprite normal
+		lowp float theta = atan(lightToSpriteDir.y, lightToSpriteDir.x);
+
+		// Calculate shadow map coordinates
+		lowp float shadowCoord = theta / (2.0 * PI);
+
+		// Sample from the specified shadow map
+		float shadow_intensity = texture2D(select_shadowmap(i), vec2(shadowCoord, 0.5)).r;
+		
+		if (shadow_intensity > SHADOW_THRESHOLD)
+		{
+			color = vec4(shadow_intensity);
+		}
+		
 		finalColor += color;
 	}
 

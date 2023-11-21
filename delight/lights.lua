@@ -139,6 +139,7 @@ local function draw_light_sprite(view, light_sprite_predicate)
 	constants.lightRadiuses = core_ex.newtable(vmath.vector4(), MAX_LIGHT_COUNT)
 	constants.lightAngles = core_ex.newtable(vmath.vector4(), MAX_LIGHT_COUNT)
 	constants.lightEnabled = core_ex.newtable(vmath.vector4(), MAX_LIGHT_COUNT)
+	constants.shadowmapViewports = core_ex.newtable(vmath.vector4(), MAX_LIGHT_COUNT)
 	
 	-- Assuming you have an array of light positions and colors
 	for i, light in ipairs(lights) do
@@ -147,21 +148,28 @@ local function draw_light_sprite(view, light_sprite_predicate)
 		constants.lightRadiuses[i] = vmath.vector4(light.radius, 0, 0, 0)
 		constants.lightAngles[i] = vmath.vector4(light.angle.x, light.angle.y, light.angle.z, light.angle.w)
 		constants.lightEnabled[i] = vmath.vector4(light.enabled and 1 or 0, 0, 0, 0)
+		if light.shadowmap then
+			constants.shadowmapViewports[i] = vmath.vector4(0, 0, light.size, 1)
+		end
 	end
 
-	if not sprite.normal_map == nil then
-		render.enable_texture(1, resource.get_texture_info(resource.get_atlas(sprite.normal_map)).handle)
-	end
+	--if not sprite.normal_map == nil then
+	--	render.enable_texture(1, resource.get_texture_info(resource.get_atlas(sprite.normal_map)).handle)
+	--end
 	
 	for i, light in pairs(lights) do
 		if light.enabled then
-			--render.enable_texture(i+1, light.shadowmap, render.BUFFER_COLOR_BIT)
+			if light.shadowmap then
+				render.enable_texture(i, light.shadowmap, render.BUFFER_COLOR_BIT)
+			end
 		end
 	end
 	render.draw(light_sprite_predicate, {constants = constants})
 	for i, light in pairs(lights) do
 		if light.enabled then
-			--render.disable_texture(i+1)
+			if light.shadowmap then
+				render.disable_texture(i)
+			end
 		end
 	end
 

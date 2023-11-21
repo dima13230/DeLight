@@ -54,6 +54,7 @@ embedded_components {
   "group: \"block\"\n"
   "mask: \"ball\"\n"
   "mask: \"block\"\n"
+  "mask: \"cursor\"\n"
   "embedded_collision_shape {\n"
   "  shapes {\n"
   "    shape_type: TYPE_BOX\n"
