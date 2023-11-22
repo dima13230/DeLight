@@ -134,12 +134,13 @@ local function draw_light_sprite(view, light_sprite_predicate)
 	local constants = render.constant_buffer()
 
 	constants.ambient_color = clear_color
+	constants.lightsAmount = vmath.vector4(core_ex.tablelength(lights), 0, 0, 0)
 	constants.lightPositions = core_ex.newtable(vmath.vector4(), MAX_LIGHT_COUNT)
 	constants.lightColors = core_ex.newtable(vmath.vector4(), MAX_LIGHT_COUNT)
 	constants.lightRadiuses = core_ex.newtable(vmath.vector4(), MAX_LIGHT_COUNT)
 	constants.lightAngles = core_ex.newtable(vmath.vector4(), MAX_LIGHT_COUNT)
 	constants.lightEnabled = core_ex.newtable(vmath.vector4(), MAX_LIGHT_COUNT)
-	constants.shadowmapViewports = core_ex.newtable(vmath.vector4(), MAX_LIGHT_COUNT)
+	constants.shadowmapViewProjs = core_ex.newtable(vmath.matrix4(), MAX_LIGHT_COUNT)
 	
 	-- Assuming you have an array of light positions and colors
 	for i, light in ipairs(lights) do
@@ -148,15 +149,19 @@ local function draw_light_sprite(view, light_sprite_predicate)
 		constants.lightRadiuses[i] = vmath.vector4(light.radius, 0, 0, 0)
 		constants.lightAngles[i] = vmath.vector4(light.angle.x, light.angle.y, light.angle.z, light.angle.w)
 		constants.lightEnabled[i] = vmath.vector4(light.enabled and 1 or 0, 0, 0, 0)
-		if light.shadowmap then
-			constants.shadowmapViewports[i] = vmath.vector4(0, 0, light.size, 1)
-		end
+
+		local viewMatrix = vmath.matrix4_look_at(
+		vmath.vector3(-light.size_half, -light.size_half, 0),
+		vmath.vector3(-light.size_half, -light.size_half, -1),
+		vmath.vector3(0, 1, 0))
+		
+		local projectionMatrix = vmath.matrix4_orthographic(0, light.size, 0, 1, -10, 10)
+		local viewProjMatrix = projectionMatrix * viewMatrix
+		
+		constants.shadowmapViewProjs[i] = viewProjMatrix
 	end
 
-	--if not sprite.normal_map == nil then
-	--	render.enable_texture(1, resource.get_texture_info(resource.get_atlas(sprite.normal_map)).handle)
-	--end
-	
+	render.set_render_target(render.RENDER_TARGET_DEFAULT)
 	for i, light in pairs(lights) do
 		if light.enabled then
 			if light.shadowmap then
@@ -172,13 +177,6 @@ local function draw_light_sprite(view, light_sprite_predicate)
 			end
 		end
 	end
-
-	if not sprite.normal_map == nil then
-		render.disable_texture(1)
-	end
-	render.set_render_target(render.RENDER_TARGET_DEFAULT)
-
-	render.draw(light_sprite_predicate, {constants = constants})
 end
 
 local function create_occluder(light, size)
@@ -238,8 +236,6 @@ function M.draw(view, projection, occluder_predicate, light_sprite_predicate)
 	local size = math.max(width, height)
 	local size_changed = render_target_size ~= size
 	render_target_size = size
-
-	draw_light_sprite(view, light_sprite_predicate)
 	
 	for i,light in pairs(lights) do
 		if light.remove then
@@ -263,6 +259,7 @@ function M.draw(view, projection, occluder_predicate, light_sprite_predicate)
 			end
 		end
 	end
+	draw_light_sprite(view, light_sprite_predicate)
 end
 
 

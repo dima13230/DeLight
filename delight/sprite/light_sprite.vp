@@ -1,4 +1,9 @@
+// Define the maximum number of lights
+#define MAX_LIGHTS 9
+
+uniform vec4 lightsAmount;
 uniform mediump mat4 view_proj;
+uniform mediump mat4 shadowmapViewProjs[MAX_LIGHTS];
 
 // positions are in world space
 attribute highp vec4 position;
@@ -6,12 +11,26 @@ attribute mediump vec2 texcoord0;
 
 varying highp vec4 var_position;
 varying mediump vec2 var_texcoord0;
-varying mediump mat4 var_view_proj;
+varying mediump vec2 var_shadowmap_texcoord[MAX_LIGHTS];
 
 void main()
 {
 	gl_Position = view_proj * vec4(position.xyz, 1.0);
 	var_texcoord0 = texcoord0;
 	var_position = position;
-	var_view_proj = view_proj;
+
+	for (int i = 0; i < MAX_LIGHTS; ++i) {
+		// webgl doesn't allow for-loops with non constant end value
+		// we use this as a workaround
+		if (i > lightsAmount.x) break;
+
+		// Transform sprite position to clip space of shadow map
+		vec4 shadowmap_position = shadowmapViewProjs[i] * vec4(position.xyz, 1.0);
+
+		// Transform shadowmap position to NDC
+		vec2 shadowmap_ndc = shadowmap_position.xy / shadowmap_position.w;
+
+		// Set the texture coordinates for the shadow map
+		var_shadowmap_texcoord[i] = shadowmap_ndc.xy;
+	}
 }
