@@ -14,10 +14,4 @@ void main()
     gl_Position = view_proj * vec4(position.x * size.x, position.y * size.y, position.z, 1.0);
 
     var_texcoord0.x = PI * 1.5 + (texcoord0.x * 2.0 - 1.0) * PI;
-    /*theta = PI * 1.5 + (texcoord0.x * 2.0 - 1.0) * PI;
-    theta = (1.5 * PI) + (texcoord0.x * 2.0 - 1.0) * PI);
-    theta / (1.5 * PI) = (texcoord0.x * 2.0 - 1.0) * PI;
-    theta / (1.5 * PI * PI) = texcoord0.x * 2.0 - 1.0
-    (theta / (1.5 * PI * PI)) + 1.0 = texcoord0.x * 2.0
-    ((theta / (1.5 * PI * PI)) + 1.0) / 2 = texcoord0.x;*/
 }

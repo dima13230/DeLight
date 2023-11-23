@@ -27,10 +27,10 @@ void main()
 		// Transform sprite position to clip space of shadow map
 		vec4 shadowmap_position = shadowmapViewProjs[i] * vec4(position.xyz, 1.0);
 
-		// Transform shadowmap position to NDC
+		// Transform shadowmap position to normalized device coords
 		vec2 shadowmap_ndc = shadowmap_position.xy / shadowmap_position.w;
 
-		// Set the texture coordinates for the shadow map
+		// Set the texture coords for the shadow map
 		var_shadowmap_texcoord[i] = shadowmap_ndc.xy;
 	}
 }

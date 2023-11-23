@@ -87,15 +87,6 @@ void main() {
 	vec3 normal = vec3(0.0, 0.0, 1.0);
 	normal = normalize( ( (texColor.xyz) - 0.5) * 2.0 ) * normal_height.x;
 
-	// Check how many lights there actually are
-	/*lowp int arlen = 0;
-	for (; arlen < MAX_LIGHTS; ++arlen) {
-		// Break if no more lights
-		if (lightPositions[arlen] == vec4(0.0) && lightColors[arlen] == vec4(0.0) && lightRadiuses[arlen] == vec4(0.0)) {
-			break;
-		}
-	}*/
-
 	lowp vec4 finalColor = vec4(0);
 	for (int i = 0; i < MAX_LIGHTS; ++i) {
 		// webgl doesn't allow for-loops with non constant end value
@@ -144,9 +135,10 @@ void main() {
 
 		// FOR TESTING {
 		//color = vec4(var_shadowmap_texcoord[i], 0.0, 1);
-		//color = vec4(r, r, r, 1.0);
+		color = vec4(r);
+		//color = vec4(theta);
 		// }
-		color *= lightCurve;
+		//color *= lightCurve;
 		
 		finalColor += color;
 	}

@@ -9,7 +9,8 @@ function final(self)
 end
 
 function update(self, dt)
-	go.set_position(vmath.vector3(-360, -360, 0))
+	local target_pos = go.get_world_position(self.target)
+	go.set_position(vmath.vector3(-360 + target_pos.x, -360 + target_pos.y, 0))
 end
 
 function on_message(self, message_id, message, sender)
