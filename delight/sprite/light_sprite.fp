@@ -135,7 +135,7 @@ void main() {
 
 		// FOR TESTING {
 		//color = vec4(var_shadowmap_texcoord[i], 0.0, 1);
-		color = vec4(r);
+		//color = vec4(r);
 		//color = vec4(theta);
 		// }
 		//color *= lightCurve;
