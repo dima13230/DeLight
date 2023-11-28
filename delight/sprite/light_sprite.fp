@@ -105,7 +105,7 @@ void main() {
 		lowp float falloffCurve = smoothstep(lightRadiuses[i].x, 0.0, distance);
 
 		// Apply the falloff curve to the light color
-		color *= vec4(falloffCurve);
+		color *= vec4(falloffCurve, falloffCurve, falloffCurve, 1);
 
 		if (normal_set.x == 1) {
 			// Calculate the light direction
