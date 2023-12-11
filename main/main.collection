@@ -97,6 +97,11 @@ instances {
   component_properties {
     id: "light_sprite"
     properties {
+      id: "unlit"
+      value: "true"
+      type: PROPERTY_TYPE_BOOLEAN
+    }
+    properties {
       id: "normal_map_enabled"
       value: "true"
       type: PROPERTY_TYPE_BOOLEAN

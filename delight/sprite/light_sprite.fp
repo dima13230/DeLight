@@ -19,6 +19,8 @@ uniform vec4 lightEnabled[MAX_LIGHTS];
 
 uniform mediump mat4 shadowmapViewProjs[MAX_LIGHTS];
 
+uniform vec4 unlit;
+
 uniform vec4 normal_set;
 uniform vec4 normal_height;
 uniform vec4 shininess;
@@ -84,6 +86,13 @@ void main() {
 	// Sample the texture
 	lowp vec4 texColor = texture2D(texture_sampler, var_texcoord0);
 
+	if (unlit.x > 0)
+	{
+		lowp vec4 tint_pm = vec4(tint.xyz * tint.w, tint.w);
+		gl_FragColor = texture2D(texture_sampler, var_texcoord0.xy) * tint_pm;
+		return;
+	}
+	
 	vec3 normal = vec3(0.0, 0.0, 1.0);
 	normal = normalize( ( (texColor.xyz) - 0.5) * 2.0 ) * normal_height.x;
 
