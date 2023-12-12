@@ -28,6 +28,7 @@ uniform vec4 shininess;
 uniform vec4 ambient_color;
 uniform lowp vec4 tint;
 
+uniform lowp vec4 size;
 uniform lowp vec4 scale;
 uniform lowp vec4 offset;
 
@@ -86,9 +87,10 @@ float sample_from_distance_map(int i, vec2 coord, float r) {
 }
 
 void main() {
-	lowp vec2 uv = vec2(var_texcoord0.x * scale.x + offset.x, var_texcoord0.y * scale.y + offset.y);
+	lowp vec2 uv = vec2(var_texcoord0.x *scale.x +offset.x, var_texcoord0.y *scale.y +offset.y);
+	uv = vec2(mod(uv.x, size.x), mod(uv.y, size.y));
 	// Sample the texture
-	lowp vec4 texColor = texture2D(texture_sampler, var_texcoord0);
+	lowp vec4 texColor = texture2D(texture_sampler, uv);
 
 	if (unlit.x > 0)
 	{
