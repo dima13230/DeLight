@@ -48,12 +48,12 @@ instances {
   }
 }
 instances {
-  id: "block_large"
-  prototype: "/example/block_large.go"
+  id: "bopz"
+  prototype: "/example/bopz.go"
   position {
-    x: 162.0
-    y: 31.0
-    z: 0.0
+    x: 0.0
+    y: 0.0
+    z: -1.0
   }
   rotation {
     x: 0.0
@@ -63,53 +63,15 @@ instances {
   }
   component_properties {
     id: "light_sprite"
-    properties {
-      id: "is_occluder"
-      value: "true"
-      type: PROPERTY_TYPE_BOOLEAN
-    }
-    properties {
-      id: "occluder_rim_factor"
-      value: "0.3"
-      type: PROPERTY_TYPE_NUMBER
-    }
-  }
-  scale3 {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-  }
-}
-instances {
-  id: "block_large1"
-  prototype: "/example/block_large.go"
-  position {
-    x: -59.0
-    y: 29.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  component_properties {
-    id: "light_sprite"
-    properties {
-      id: "unlit"
-      value: "true"
-      type: PROPERTY_TYPE_BOOLEAN
-    }
     properties {
       id: "normal_map_enabled"
       value: "true"
       type: PROPERTY_TYPE_BOOLEAN
     }
     properties {
-      id: "is_occluder"
-      value: "true"
-      type: PROPERTY_TYPE_BOOLEAN
+      id: "shininess"
+      value: "0.0"
+      type: PROPERTY_TYPE_NUMBER
     }
   }
   scale3 {
@@ -122,8 +84,8 @@ collection_instances {
   id: "ball"
   collection: "/example/ball.collection"
   position {
-    x: 0.0
-    y: 0.0
+    x: 96.0
+    y: 2.0
     z: 0.0
   }
   rotation {
@@ -131,6 +93,22 @@ collection_instances {
     y: 0.0
     z: 0.0
     w: 1.0
+  }
+  instance_properties {
+    id: "go"
+    properties {
+      id: "light_sprite"
+      properties {
+        id: "normal_map_enabled"
+        value: "true"
+        type: PROPERTY_TYPE_BOOLEAN
+      }
+      properties {
+        id: "shininess"
+        value: "0.0"
+        type: PROPERTY_TYPE_NUMBER
+      }
+    }
   }
   scale3 {
     x: 1.0
@@ -227,6 +205,7 @@ embedded_instances {
   "    }\\n"
   "    index: 0\\n"
   "    count: 1\\n"
+  "    id: \\\"\\\"\\n"
   "  }\\n"
   "  data: 0.15\\n"
   "}\\n"
@@ -250,10 +229,13 @@ embedded_instances {
   "embedded_components {\n"
   "  id: \"sprite\"\n"
   "  type: \"sprite\"\n"
-  "  data: \"tile_set: \\\"/example/asset/images.atlas\\\"\\n"
-  "default_animation: \\\"ball_red_small_alt\\\"\\n"
+  "  data: \"default_animation: \\\"ball_red_small_alt\\\"\\n"
   "material: \\\"/delight/materials/light_affected_sprite.material\\\"\\n"
   "blend_mode: BLEND_MODE_ALPHA\\n"
+  "textures {\\n"
+  "  sampler: \\\"texture_sampler\\\"\\n"
+  "  texture: \\\"/example/asset/images.atlas\\\"\\n"
+  "}\\n"
   "\"\n"
   "  position {\n"
   "    x: 0.0\n"
@@ -337,68 +319,6 @@ embedded_instances {
     x: 0.0
     y: 0.0
     z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale3 {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-  }
-}
-embedded_instances {
-  id: "go1"
-  data: "components {\n"
-  "  id: \"light_sprite_background\"\n"
-  "  component: \"/delight/sprite/light_sprite_background.script\"\n"
-  "  position {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "  }\n"
-  "  rotation {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "    w: 1.0\n"
-  "  }\n"
-  "  property_decls {\n"
-  "  }\n"
-  "}\n"
-  "embedded_components {\n"
-  "  id: \"sprite\"\n"
-  "  type: \"sprite\"\n"
-  "  data: \"tile_set: \\\"/example/background.atlas\\\"\\n"
-  "default_animation: \\\"2\\\"\\n"
-  "material: \\\"/delight/materials/light_affected_sprite_background.material\\\"\\n"
-  "blend_mode: BLEND_MODE_ALPHA\\n"
-  "\"\n"
-  "  position {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "  }\n"
-  "  rotation {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "    w: 1.0\n"
-  "  }\n"
-  "  scale {\n"
-  "    x: 10.0\n"
-  "    y: 10.0\n"
-  "    z: 1.0\n"
-  "  }\n"
-  "}\n"
-  ""
-  position {
-    x: 0.0
-    y: 0.0
-    z: -4.0
   }
   rotation {
     x: 0.0

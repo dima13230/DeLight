@@ -34,15 +34,8 @@ function init(self)
 		normal_height = self.normal_height,
 		shininess = self.shininess
 	})	
-
-	local scale = go.get_scale()
-	sprite.set_constant("#sprite", "scale", vmath.vector4(self.scale.x, self.scale.y, 1, 1))
-
 	atlas_size = vmath.vector3(get_pow2(self.size.x), get_pow2(self.size.y), 1)					--Get texture size in atlas (closest power of 2)
 	texture_ratio = vmath.vector3(self.size.x, self.size.y, 1)		--Easy to read variable
-	sprite.set_constant("#sprite", "size", vmath.vector4(texture_ratio.x, texture_ratio.y, 1, 1))
-	
-	self.offset = {x = 0, y = 0}
 end
 
 function final(self)
@@ -50,9 +43,6 @@ function final(self)
 end
 
 function update(self, dt)
-	self.offset.x = self.offset.x + dt / 10
-
-	sprite.set_constant("#sprite", "offset", vmath.vector4(self.offset.x, self.offset.y, 0, 0))
 end
 
 function fixed_update(self, dt)

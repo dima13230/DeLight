@@ -21,6 +21,9 @@ uniform mediump mat4 shadowmapViewProjs[MAX_LIGHTS];
 
 uniform vec4 unlit;
 
+uniform vec4 window_resolution;
+uniform vec4 relative_resolution;
+
 uniform vec4 normal_set;
 uniform vec4 normal_height;
 uniform vec4 shininess;
@@ -30,61 +33,16 @@ uniform lowp vec4 tint;
 
 varying highp vec4 var_position;
 varying mediump vec2 var_texcoord0;
+varying mediump vec2 var_texcoord1;
 varying mediump vec2 var_shadowmap_texcoord[MAX_LIGHTS];
 
 uniform lowp sampler2D texture_sampler;
-
-uniform lowp sampler2D shadowmap_sampler_0;
-uniform lowp sampler2D shadowmap_sampler_1;
-uniform lowp sampler2D shadowmap_sampler_2;
-uniform lowp sampler2D shadowmap_sampler_3;
-uniform lowp sampler2D shadowmap_sampler_4;
-uniform lowp sampler2D shadowmap_sampler_5;
-uniform lowp sampler2D shadowmap_sampler_6;
-uniform lowp sampler2D shadowmap_sampler_7;
-uniform lowp sampler2D shadowmap_sampler_8;
-
-sampler2D select_shadowmap(int index) {
-	if (index == 0) {
-		return shadowmap_sampler_0;
-	}
-	else if (index == 1) {
-		return shadowmap_sampler_1;
-	}
-	else if (index == 2) {
-		return shadowmap_sampler_2;
-	}
-	else if (index == 3) {
-		return shadowmap_sampler_3;
-	}
-	else if (index == 4) {
-		return shadowmap_sampler_4;
-	}
-	else if (index == 5) {
-		return shadowmap_sampler_5;
-	}
-	else if (index == 6) {
-		return shadowmap_sampler_6;
-	}
-	else if (index == 7) {
-		return shadowmap_sampler_7;
-	}
-	else if (index == 8) {
-		return shadowmap_sampler_8;
-	}
-	else {
-		return shadowmap_sampler_0;
-	}
-}
-
-// Sample from the 1D distance map
-float sample_from_distance_map(int i, vec2 coord, float r) {
-	return step(r, texture2D(select_shadowmap(i), coord).r);
-}
+uniform lowp sampler2D normal_map;
 
 void main() {
 	// Sample the texture
-	lowp vec4 texColor = texture2D(texture_sampler, var_texcoord0);
+	vec4 texColor = texture2D(texture_sampler, var_texcoord0);
+	vec3 normalColor = texture2D(normal_map, var_texcoord1).rgb;
 
 	if (unlit.x > 0)
 	{
@@ -92,9 +50,6 @@ void main() {
 		gl_FragColor = texture2D(texture_sampler, var_texcoord0.xy) * tint_pm;
 		return;
 	}
-	
-	vec3 normal = vec3(0.0, 0.0, 1.0);
-	normal = normalize( ( (texColor.xyz) - 0.5) * 2.0 ) * normal_height.x;
 
 	lowp vec4 finalColor = vec4(0);
 	for (int i = 0; i < MAX_LIGHTS; ++i) {
@@ -115,39 +70,34 @@ void main() {
 
 		// Apply the falloff curve to the light color
 		color *= vec4(falloffCurve, falloffCurve, falloffCurve, 1);
-
+		
 		if (normal_set.x == 1) {
 			// Calculate the light direction
-			lowp vec3 lightDir = normalize(lightPositions[i].xyz - var_position.xyz);
-
+			vec2 lightPosition = relative_resolution.xy * lightPositions[i].xy / window_resolution.xy;
+			
+			//lowp vec3 light_dir = vec3(lightPosition - (gl_FragCoord.xy / window_resolution.xy), lightPositions[i].z);
+			lowp vec3 light_dir = vec3(lightPositions[i].xy - var_position.xy, lightPositions[i].z); // first variant is more accurate but not fixed yet
+			
+			light_dir.x *= window_resolution.x / window_resolution.y;
+			
+			vec3 N = normalize(normalColor * 2.0 - 1.0);
+			float D = length(light_dir);
+			vec3 L = normalize(light_dir);
+			
 			// Calculate the diffuse lighting
-			lowp float diffuse = max(dot(normal, lightDir), 0.0);
+			lowp vec3 diffuse = (lightColors[i].rgb * lightColors[i].a) * max(dot(N, L), 0.0);
 
 			// Calculate the specular lighting
-			lowp vec3 viewDir = normalize(-var_position.xyz);
-			lowp vec3 reflectDir = reflect(-lightDir, normal);
-			lowp float specular = pow(max(dot(viewDir, reflectDir), 0.0), shininess.x);
-
+			vec3 V = normalize(-light_dir); // View direction
+			vec3 R = reflect(-L, N); // Reflected light direction
+			float specularIntensity = pow(max(dot(R, V), 0.0), shininess.x);
+			vec3 specular = lightColors[i].rgb * specularIntensity;
+			if (shininess.x == 0)
+				specular = vec3(0);
+			
 			// Apply the diffuse and specular lighting to the light color
-			color *= vec4(diffuse + 0.5 * specular);
+			color = vec4(diffuse * falloffCurve + specular * falloffCurve, 1); //  + specular * falloffCurve
 		}
-		// SHADOW MAP SEGMENT
-		float theta = atan(var_shadowmap_texcoord[i].y, var_shadowmap_texcoord[i].x);
-		theta = mod(theta, 2.0 * PI);
-		float r = length(var_shadowmap_texcoord[i]);
-		
-		// The tex coord to sample our 1D lookup texture
-		float coord = (theta + PI) / (2.0 * PI);
-		vec2 tc = vec2(coord, 0.0);
-
-		float lightCurve = sample_from_distance_map(i, tc, r);
-
-		// FOR TESTING {
-		//color = vec4(var_shadowmap_texcoord[i], 0.0, 1);
-		//color = vec4(r);
-		//color = vec4(theta);
-		// }
-		//color *= lightCurve;
 		
 		finalColor += color;
 	}

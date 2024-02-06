@@ -131,8 +131,16 @@ local function draw_light_sprite(view, light_sprite_predicate)
 	render.set_blend_func(render.BLEND_SRC_ALPHA, render.BLEND_ONE_MINUS_SRC_ALPHA)
 	render.disable_state(render.STATE_CULL_FACE)
 
+	local DISPLAY_WIDTH = sys.get_config_int("display.width")
+	local DISPLAY_HEIGHT = sys.get_config_int("display.height")
+	local w,h = window.get_size()
+	local wr = w / DISPLAY_WIDTH
+	local hr = h / DISPLAY_HEIGHT
+	
 	local constants = render.constant_buffer()
 
+	constants.window_resolution = vmath.vector4(w, h, 0, 0)
+	constants.relative_resolution = vmath.vector4(wr, hr, 0, 0)
 	constants.ambient_color = clear_color
 	constants.lightsAmount = vmath.vector4(core_ex.tablelength(lights), 0, 0, 0)
 	constants.lightPositions = core_ex.newtable(vmath.vector4(), MAX_LIGHT_COUNT)
@@ -162,21 +170,21 @@ local function draw_light_sprite(view, light_sprite_predicate)
 	end
 
 	render.set_render_target(render.RENDER_TARGET_DEFAULT)
-	for i, light in pairs(lights) do
+	--[[for i, light in pairs(lights) do
 		if light.enabled then
 			if light.shadowmap then
 				render.enable_texture(i, light.shadowmap, render.BUFFER_COLOR_BIT)
 			end
 		end
-	end
+	end--]]
 	render.draw(light_sprite_predicate, {constants = constants})
-	for i, light in pairs(lights) do
+	--[[for i, light in pairs(lights) do
 		if light.enabled then
 			if light.shadowmap then
 				render.disable_texture(i)
 			end
 		end
-	end
+	end--]]
 end
 
 local function create_occluder(light, size)

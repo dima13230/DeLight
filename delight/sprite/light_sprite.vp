@@ -8,15 +8,18 @@ uniform mediump mat4 shadowmapViewProjs[MAX_LIGHTS];
 // positions are in world space
 attribute highp vec4 position;
 attribute mediump vec2 texcoord0;
+attribute mediump vec2 texcoord1;
 
 varying highp vec4 var_position;
 varying mediump vec2 var_texcoord0;
+varying mediump vec2 var_texcoord1;
 varying mediump vec2 var_shadowmap_texcoord[MAX_LIGHTS];
 
 void main()
 {
 	gl_Position = view_proj * vec4(position.xyz, 1.0);
 	var_texcoord0 = texcoord0;
+	var_texcoord1 = texcoord1;
 	var_position = position;
 
 	for (int i = 0; i < MAX_LIGHTS; ++i) {

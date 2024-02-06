@@ -62,7 +62,7 @@ samplers {
   max_anisotropy: 0.0
 }
 samplers {
-  name: "shadowmap_sampler_0"
+  name: "normal_map"
   wrap_u: WRAP_MODE_REPEAT
   wrap_v: WRAP_MODE_REPEAT
   filter_min: FILTER_MODE_MIN_NEAREST
