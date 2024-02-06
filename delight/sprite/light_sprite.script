@@ -1,7 +1,7 @@
 go.property("unlit", false)
 go.property("normal_map_enabled", false)
 go.property("normal_height", 1.0)
-go.property("shininess", 1.0)
+go.property("shininess", 0.0)
 
 go.property("is_occluder", false)
 go.property("occluder_rim_factor", 0.5)
