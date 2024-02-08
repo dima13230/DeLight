@@ -3,7 +3,7 @@
 #define PI 3.14
 
 // Define the maximum number of lights
-#define MAX_LIGHTS 9
+#define MAX_LIGHTS 256
 #define SHADOW_THRESHOLD 0
 
 uniform vec4 lightsAmount;

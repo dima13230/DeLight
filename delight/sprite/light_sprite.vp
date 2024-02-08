@@ -1,5 +1,5 @@
 // Define the maximum number of lights
-#define MAX_LIGHTS 9
+#define MAX_LIGHTS 256
 
 uniform vec4 lightsAmount;
 uniform mediump mat4 view_proj;
