@@ -3,7 +3,7 @@
 #define PI 3.14
 
 // Define the maximum number of lights
-#define MAX_LIGHTS 256
+#define MAX_LIGHTS 64
 #define SHADOW_THRESHOLD 0
 
 uniform vec4 lightsAmount;
@@ -16,8 +16,6 @@ uniform vec4 lightRadiuses[MAX_LIGHTS];
 // Array of light angles
 uniform vec4 lightAngles[MAX_LIGHTS];
 uniform vec4 lightEnabled[MAX_LIGHTS];
-
-uniform mediump mat4 shadowmapViewProjs[MAX_LIGHTS];
 
 uniform vec4 unlit;
 
@@ -34,7 +32,6 @@ uniform lowp vec4 tint;
 varying highp vec4 var_position;
 varying mediump vec2 var_texcoord0;
 varying mediump vec2 var_texcoord1;
-varying mediump vec2 var_shadowmap_texcoord[MAX_LIGHTS];
 
 uniform lowp sampler2D texture_sampler;
 uniform lowp sampler2D normal_map;
