@@ -16,7 +16,7 @@ local BLACKTRANSPARENT = vmath.vector4(0, 0, 0, 0)
 local quad_pred = nil
 local clear_color = nil
 
-local MAX_LIGHT_COUNT = 9
+local MAX_LIGHT_COUNT = 64
 local light_sprite_constants = nil
 
 -- draw lights to quad with shadow_map as input texture
@@ -148,7 +148,7 @@ local function draw_light_sprite(view, light_sprite_predicate)
 	constants.lightRadiuses = core_ex.newtable(vmath.vector4(), MAX_LIGHT_COUNT)
 	constants.lightAngles = core_ex.newtable(vmath.vector4(), MAX_LIGHT_COUNT)
 	constants.lightEnabled = core_ex.newtable(vmath.vector4(), MAX_LIGHT_COUNT)
-	constants.shadowmapViewProjs = core_ex.newtable(vmath.matrix4(), MAX_LIGHT_COUNT)
+	--constants.lightRotations = core_ex.newtable(vmath.vector4(), MAX_LIGHT_COUNT)
 	
 	-- Assuming you have an array of light positions and colors
 	for i, light in ipairs(lights) do
@@ -157,16 +157,6 @@ local function draw_light_sprite(view, light_sprite_predicate)
 		constants.lightRadiuses[i] = vmath.vector4(light.radius, 0, 0, 0)
 		constants.lightAngles[i] = vmath.vector4(light.angle.x, light.angle.y, light.angle.z, light.angle.w)
 		constants.lightEnabled[i] = vmath.vector4(light.enabled and 1 or 0, 0, 0, 0)
-
-		local viewMatrix = vmath.matrix4_look_at(
-		vmath.vector3(-light.size_half, -light.size_half, 0),
-		vmath.vector3(-light.size_half, -light.size_half, -1),
-		vmath.vector3(0, 1, 0))
-		
-		local projectionMatrix = vmath.matrix4_orthographic(0, light.size, 0, 1, -10, 10)
-		local viewProjMatrix = projectionMatrix * viewMatrix
-		
-		constants.shadowmapViewProjs[i] = viewProjMatrix
 	end
 
 	render.set_render_target(render.RENDER_TARGET_DEFAULT)

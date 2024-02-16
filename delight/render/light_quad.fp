@@ -1,4 +1,4 @@
-#define PI 3.14
+#define PI 3.14159
 
 // User defined
 uniform mediump vec4 falloff;
@@ -19,11 +19,26 @@ float sample_from_distance_map(vec2 coord, float r) {
 
 void main(void) {
 	float theta = atan(var_texcoord0.y, var_texcoord0.x);
-	
+
 	// Discard if not inside angle
-	if (theta > angle.y || theta < angle.w || (theta > 0.0 && theta < angle.x) || (theta < 0.0 && theta > angle.z)) 
+	if (theta > angle.y)
+	{
 		discard;
-	
+	}
+	else if (theta < angle.w)
+	{
+		gl_FragColor = vec4(0, 1, 0, 1);
+		return;
+	}
+	else if (theta - angle.z > 0 && theta < angle.x)
+	{
+		discard;
+	}
+	else if (theta - angle.z < 0 && theta > angle.z)
+	{
+		discard;
+	}
+
 	// Rectangular to polar
 	// r = 0.0 on top of light
 	// r = 1.0 as far away from the light as possible

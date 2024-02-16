@@ -13,6 +13,21 @@ components {
     w: 1.0
   }
 }
+components {
+  id: "rotating_object"
+  component: "/main/rotating_object.script"
+  position {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+}
 embedded_components {
   id: "sprite"
   type: "sprite"
@@ -82,5 +97,89 @@ embedded_components {
     y: 0.0
     z: 0.0
     w: 1.0
+  }
+}
+embedded_components {
+  id: "sprite1"
+  type: "sprite"
+  data: "default_animation: \"ball_blue_small_alt\"\n"
+  "material: \"/builtins/materials/sprite.material\"\n"
+  "blend_mode: BLEND_MODE_ALPHA\n"
+  "textures {\n"
+  "  sampler: \"texture_sampler\"\n"
+  "  texture: \"/example/asset/images.atlas\"\n"
+  "}\n"
+  ""
+  position {
+    x: 5.0
+    y: 4.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale {
+    x: 1.215126
+    y: 0.378151
+    z: 1.0
+  }
+}
+embedded_components {
+  id: "sprite2"
+  type: "sprite"
+  data: "default_animation: \"ball_blue_small_alt\"\n"
+  "material: \"/builtins/materials/sprite.material\"\n"
+  "blend_mode: BLEND_MODE_ALPHA\n"
+  "textures {\n"
+  "  sampler: \"texture_sampler\"\n"
+  "  texture: \"/example/asset/images.atlas\"\n"
+  "}\n"
+  ""
+  position {
+    x: 0.0
+    y: 56.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale {
+    x: 0.420598
+    y: 0.508359
+    z: 1.0
+  }
+}
+embedded_components {
+  id: "sprite3"
+  type: "sprite"
+  data: "default_animation: \"ball_red_small_alt\"\n"
+  "material: \"/builtins/materials/sprite.material\"\n"
+  "blend_mode: BLEND_MODE_ALPHA\n"
+  "textures {\n"
+  "  sampler: \"texture_sampler\"\n"
+  "  texture: \"/example/asset/images.atlas\"\n"
+  "}\n"
+  ""
+  position {
+    x: 0.0
+    y: -51.0
+    z: 0.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale {
+    x: 0.421086
+    y: 0.467976
+    z: 1.0
   }
 }

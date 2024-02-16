@@ -42,6 +42,7 @@ w = lower to (z to -180)
         -90
 --]]
 
+
 local function update_angle(arc_angle)
 	local x, y, z, w = 0, 0, 0, 0
 	local rotation = go.get(".", "euler.z") % 360
@@ -52,13 +53,16 @@ local function update_angle(arc_angle)
 		w = from
 		x = 0
 		y = to
+		print("A: " .. " x="..x .. " y="..y .. " z="..z .. " w="..w)
 	elseif from <= 180 then
 		x = from
 		if to > 180 then
 			y = 180
 			w = -180
 			z = (to - 360)
+		print("B: " .. "x="..x .. " y="..y .. " z="..z .. " w="..w)
 		else
+			print("C")
 			y = to
 			w = 0
 			z = 0
@@ -66,10 +70,12 @@ local function update_angle(arc_angle)
 	elseif from > 180 then
 		w = (from - 360)
 		if to > 360 then
+			print("D")
 			z = 0
 			x = 0
 			y = (to - 360)
 		else
+			print("E")
 			z = (to - 360)
 			x = 0
 			y = 0
@@ -77,6 +83,7 @@ local function update_angle(arc_angle)
 	end
 	return vmath.vector4(math.rad(x), math.rad(y), math.rad(z), math.rad(w))
 end
+
 
 function init(self)
 	self.flicker_timer = 0

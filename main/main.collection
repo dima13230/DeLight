@@ -36,13 +36,18 @@ instances {
   component_properties {
     id: "lightsource"
     properties {
+      id: "arc_angle"
+      value: "220.0"
+      type: PROPERTY_TYPE_NUMBER
+    }
+    properties {
       id: "draw_point"
       value: "true"
       type: PROPERTY_TYPE_BOOLEAN
     }
     properties {
       id: "flicker"
-      value: "true"
+      value: "false"
       type: PROPERTY_TYPE_BOOLEAN
     }
   }
@@ -77,39 +82,6 @@ instances {
       id: "shininess"
       value: "0.0"
       type: PROPERTY_TYPE_NUMBER
-    }
-  }
-  scale3 {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-  }
-}
-instances {
-  id: "light1"
-  prototype: "/example/light.go"
-  position {
-    x: -117.0
-    y: -138.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  component_properties {
-    id: "lightsource"
-    properties {
-      id: "draw_point"
-      value: "true"
-      type: PROPERTY_TYPE_BOOLEAN
-    }
-    properties {
-      id: "flicker"
-      value: "false"
-      type: PROPERTY_TYPE_BOOLEAN
     }
   }
   scale3 {
